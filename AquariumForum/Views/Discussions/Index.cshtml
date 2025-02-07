@@ -10,8 +10,8 @@
     <a class="btn btn-primary" asp-action="Create">➕ New Discussion</a>
 </p>
 
-<table class="table">
-    <thead>
+<table class="table table-hover">
+    <thead class="table-light">
         <tr>
             <th>Title</th>
             <th>Posted On</th>
@@ -36,9 +36,16 @@
                     }
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.DiscussionId">View</a>
-                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.DiscussionId">Edit</a>
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.DiscussionId">Delete</a>
+                    <a asp-action="Details" asp-route-id="@item.DiscussionId" class="btn btn-link text-info" title="View">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@item.DiscussionId" class="btn btn-link text-warning" title="Edit">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.DiscussionId" class="btn btn-link text-danger" title="Delete"
+                       onclick="return confirm('Are you sure you want to delete this discussion?');">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
                 </td>
             </tr>
         }

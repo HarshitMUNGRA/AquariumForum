@@ -9,20 +9,12 @@ namespace AquariumForum.Models
     public class Discussion
     {
         public int DiscussionId { get; set; }
-
-        [Required]
         public string Title { get; set; } = string.Empty;
-
-        [Required]
         public string Content { get; set; } = string.Empty;
-
         public DateTime CreateDate { get; set; } = DateTime.UtcNow;
-
-        public string? ImageFilename { get; set; } // Store only the filename
-
+        public string? ImageFilename { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
-
-        [NotMapped] // Prevents storing in the database
-        public IFormFile? ImageFile { get; set; } // Handles file upload
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
     }
 }

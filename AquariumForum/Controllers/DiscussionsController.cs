@@ -14,7 +14,6 @@ using System.Reflection.Metadata;
 
 namespace AquariumForum.Controllers
 {
-    // Constructor to inject database context and web host environment for file handling
     public class DiscussionsController : Controller
     {
         private readonly AquariumForumContext _context;
@@ -31,11 +30,7 @@ namespace AquariumForum.Controllers
         {
             return View(await _context.Discussion.ToListAsync());
         }
-
         // GET: Discussions/Details/5
-        //The ID of the discussion Retrieves details of a specific discussion along with its comments.
-
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,7 +39,7 @@ namespace AquariumForum.Controllers
             }
 
             var discussion = await _context.Discussion
-                .Include(d => d.Comments) // Include comments in details view
+                .Include(d => d.Comments)
                 .FirstOrDefaultAsync(m => m.DiscussionId == id);
 
             if (discussion == null)
@@ -61,19 +56,13 @@ namespace AquariumForum.Controllers
         {
             return View();
         }
-
-
-        //Handles the creation of a new discussion, including image upload if provided.
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Content,ImageFile")] Discussion discussion)
         {
             if (ModelState.IsValid)
             {
-                discussion.CreateDate = DateTime.Now; // Set creation date
-
-                //  Handle Image Upload
+                discussion.CreateDate = DateTime.Now;
                 if (discussion.ImageFile != null)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
@@ -85,15 +74,12 @@ namespace AquariumForum.Controllers
                     {
                         await discussion.ImageFile.CopyToAsync(fileStream);
                     }
-
-                    discussion.ImageFilename = uniqueFileName; // Store filename in the database
+                    discussion.ImageFilename = uniqueFileName; 
                 }
-
                 _context.Add(discussion);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
             return View(discussion);
         }
 
@@ -141,8 +127,6 @@ namespace AquariumForum.Controllers
                         {
                             await discussion.ImageFile.CopyToAsync(fileStream);
                         }
-
-                        // ✅ Delete Old Image if Exists
                         if (!string.IsNullOrEmpty(existingDiscussion?.ImageFilename))
                         {
                             string oldFilePath = Path.Combine(uploadsFolder, existingDiscussion.ImageFilename);
@@ -156,7 +140,6 @@ namespace AquariumForum.Controllers
                     }
                     else
                     {
-                        // ✅ Keep existing image if no new image is uploaded
                         discussion.ImageFilename = existingDiscussion?.ImageFilename;
                     }
 
@@ -178,8 +161,7 @@ namespace AquariumForum.Controllers
             }
             return View(discussion);
         }
-
-        // GET: Discussions/Delete/5
+       // GET: Discussions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -206,7 +188,6 @@ namespace AquariumForum.Controllers
             var discussion = await _context.Discussion.FindAsync(id);
             if (discussion != null)
             {
-                // ✅ Delete Image from Server
                 if (!string.IsNullOrEmpty(discussion.ImageFilename))
                 {
                     string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", discussion.ImageFilename);

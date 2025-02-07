@@ -20,8 +20,6 @@
         <textarea asp-for="Content" class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
-
-    <!-- ✅ FIX: Replace ImageFilename Text Input with File Upload -->
     <div class="form-group">
         <label asp-for="ImageFile" class="control-label">Upload Image</label>
         <input type="file" asp-for="ImageFile" class="form-control-file" />

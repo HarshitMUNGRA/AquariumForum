@@ -6,8 +6,6 @@
 
 <div class="container mt-4">
     <h1 class="text-center text-primary">Add a Comment</h1>
-
-    <!-- ✅ Show Error Message if Comment is Empty -->
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">@TempData["Error"]</div>
