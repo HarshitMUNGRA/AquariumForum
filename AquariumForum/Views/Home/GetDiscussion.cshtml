@@ -5,53 +5,65 @@
 }
 
 <div class="container mt-4">
-    <h1 class="text-primary">@Model.Title</h1>
-    <p class="text-muted"><i class="fa-solid fa-calendar"></i> Posted on: @Model.CreateDate.ToString("yyyy-MM-dd HH:mm")</p>
-    <hr />
+    <h2 class="text-center text-dark fw-bold">Discussion Details</h2>
 
-    <h3 class="my-3">Discussion Content</h3>
-    <p class="lead">@Model.Content</p>
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-sm border-primary" style="width: 22rem;">
+            @if (!string.IsNullOrEmpty(Model.ImageFilename))
+            {
+                <img src="~/images/@Model.ImageFilename" class="card-img-top rounded" alt="Discussion Image">
+            }
 
-    @if (!string.IsNullOrEmpty(Model.ImageFilename))
-    {
-        <img src="~/images/@Model.ImageFilename" alt="Discussion Image" class="img-fluid rounded shadow-sm" style="max-width: 100%; height: auto;" />
-    }
-    else
-    {
-        <p><em>No image uploaded for this discussion.</em></p>
-    }
+            <div class="card-body">
+                <h5 class="card-title text-primary">@Model.Title</h5>
+                <p class="text-muted">
+                    <i class="fa-solid fa-calendar"></i> @Model.CreateDate.ToString("yyyy-MM-dd HH:mm")
+                </p>
+                <p class="card-text">@Model.Content</p>
+            </div>
 
-    <hr />
-
-    <div class="d-flex justify-content-between align-items-center">
-        <h3>Comments</h3>
-        <a class="btn btn-success btn-sm" asp-controller="Comments" asp-action="Create" asp-route-discussionId="@Model.DiscussionId">
-            <i class="fa-solid fa-plus"></i> Add New Comment
-        </a>
+            <div class="card-footer bg-white">
+                <div class="d-flex justify-content-between">
+                    <span>
+                        <i class="fa-solid fa-comments"></i> @Model.Comments?.Count() Comments
+                    </span>
+                    <a class="btn btn-primary btn-sm" asp-controller="Comments" asp-action="Create" asp-route-discussionId="@Model.DiscussionId">
+                        <i class="fa-solid fa-comment"></i> Add Comment
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <hr />
+    <div class="mt-4">
+        <h3 class="text-center">Comments</h3>
+        <hr />
 
-    @if (Model.Comments != null && Model.Comments.Any())
-    {
-        <div class="list-group">
-            @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreateDate))
-            {
-                <div class="list-group-item border-left border-primary">
-                    <p class="mb-1">@comment.Content</p>
-                    <p class="text-muted"><small><i class="fa-solid fa-clock"></i> Posted on @comment.CreateDate.ToString("yyyy-MM-dd HH:mm")</small></p>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p class="text-muted">No comments yet. Be the first to comment!</p>
-    }
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            <div class="d-flex flex-column align-items-center">
+                @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreateDate))
+                {
+                    <div class="card shadow-sm mb-2 border-light" style="width: 20rem;">
+                        <div class="card-body">
+                            <p class="card-text">@comment.Content</p>
+                            <p class="text-muted small">
+                                <i class="fa-solid fa-clock"></i> @comment.CreateDate.ToString("yyyy-MM-dd HH:mm")
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted text-center">No comments yet. Be the first to comment!</p>
+        }
+    </div>
 
-    <hr />
-
-    <a class="btn btn-secondary" asp-action="Index">
-        <i class="fa-solid fa-arrow-left"></i> Back to Home
-    </a>
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-secondary" asp-action="Index">
+            <i class="fa-solid fa-arrow-left"></i> Back to Discussions
+        </a>
+    </div>
 </div>
