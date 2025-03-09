@@ -1,34 +1,42 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using AquariumForum.Data;
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<AquariumForumContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("AquariumForumContext") ?? throw new InvalidOperationException("Connection string 'AquariumForumContext' not found.")));
+using AquariumForum.Models;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure DbContext to use SQLite
+builder.Services.AddDbContext<AquariumForumContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("AquariumForumContext")
+        ?? throw new InvalidOperationException("Connection string 'AquariumForumContext' not found.")));
+
+// Add Identity services
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AquariumForumContext>();
+
+// Add MVC controllers and views
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication(); // <- Add this to enable Identity authentication
 app.UseAuthorization();
-
-app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-
+app.MapRazorPages().WithStaticAssets();
 app.Run();
