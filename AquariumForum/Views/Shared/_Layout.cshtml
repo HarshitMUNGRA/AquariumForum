@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using AquariumForum.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject AquariumForum.Data.AquariumForumContext _context
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AquariumForum.styles.css" asp-append-version="true" />
+
     <style>
         body {
             background-color: #f8f9fa; /* Light background */
@@ -81,11 +88,22 @@
                                 <i class="fa-solid fa-house"></i> Home
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Discussions" asp-action="Index">
-                                <i class="fa-solid fa-message"></i> Discussions
-                            </a>
-                        </li>
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            var userHasDiscussions = _context.Discussion.Any(d => d.UserId == currentUser.Id);
+
+                            if (userHasDiscussions)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Discussions" asp-action="Index">
+                                        <i class="fa-solid fa-message"></i> Discussions
+                                    </a>
+                                </li>
+                            }
+                        }
+
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Privacy">
                                 <i class="fa-solid fa-lock"></i> Privacy
